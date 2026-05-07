@@ -56,7 +56,8 @@ function effectiveBandwidth(hw, sizeGb) {
     return { bandwidth: hw.gpu.memory_bandwidth_gbps, regime: 'gpu_vram' };
   }
   if (hw.ramType && hw.ramType.bandwidth_per_channel_gbps > 0) {
-    return { bandwidth: hw.ramType.bandwidth_per_channel_gbps * 2, regime: 'system_ram' };
+    const channels = hw.ramType.channels || 2;
+    return { bandwidth: hw.ramType.bandwidth_per_channel_gbps * channels, regime: 'system_ram' };
   }
   return { bandwidth: hw.cpu.memory_bandwidth_gbps, regime: 'system_ram' };
 }

@@ -42,12 +42,102 @@ function buildHardware() {
     };
   } else {
     const cpu = getComponent('cpus', document.getElementById('custom-cpu').value);
-    const gpuId = document.getElementById('custom-gpu').value;
-    const gpu = gpuId !== 'none' ? getComponent('gpus', gpuId) : null;
-    const ramType = getComponent('ram_types', document.getElementById('custom-ram-type').value);
+    const gpuVendor = document.getElementById('custom-gpu-vendor').value;
+    let gpu = null;
+    if (gpuVendor !== 'none') {
+      const gpuId = document.getElementById('custom-gpu').value;
+      gpu = gpuId && gpuId !== 'none' ? getComponent('gpus', gpuId) : null;
+    }
+    // Apple Silicon SoCs use unified memory; ignore any picked GPU to avoid
+    // double-counting VRAM in the memory budget.
+    if (cpu && cpu.platform === 'apple-silicon') gpu = null;
+    const gen = document.getElementById('custom-ram-gen').value;
+    const speed = parseInt(document.getElementById('custom-ram-speed').value, 10);
+    const sticks = parseInt(document.getElementById('custom-ram-sticks').value, 10);
+    const channels = sticks === 1 ? 1 : 2;
+    // Bandwidth per channel in GB/s = MT/s * 8 bytes / 1000.
+    const bandwidth_per_channel_gbps = +(speed * 8 / 1000).toFixed(1);
+    const ramType = {
+      id: `${gen}-${speed}`,
+      name: `${gen.toUpperCase()}-${speed} ${sticks === 1 ? 'single' : 'dual'} channel`,
+      bandwidth_per_channel_gbps,
+      channels,
+    };
     const ram_gb = parseInt(document.getElementById('custom-ram-gb').value, 10) || 16;
     return { cpu, gpu, ramType, ram_gb };
   }
+}
+
+function populateCpus(vendor) {
+  const list = state.components.cpus.filter(c => {
+    if (vendor === 'apple') return c.platform === 'apple-silicon';
+    return c.vendor === vendor;
+  });
+  const sel = document.getElementById('custom-cpu');
+  sel.innerHTML = list.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+  // Sensible default per vendor.
+  const defaults = { apple: 'apple-m3-pro', intel: 'intel-i9-14900k', amd: 'amd-7700x' };
+  if (defaults[vendor] && list.find(c => c.id === defaults[vendor])) sel.value = defaults[vendor];
+}
+
+function populateGpus(vendor) {
+  const wrap = document.getElementById('custom-gpu-wrap');
+  if (vendor === 'none') {
+    wrap.classList.add('hidden');
+    return;
+  }
+  wrap.classList.remove('hidden');
+  const list = state.components.gpus.filter(g => g.vendor === vendor);
+  const sel = document.getElementById('custom-gpu');
+  sel.innerHTML = list.map(g => `<option value="${g.id}">${g.name}</option>`).join('');
+  const defaults = { nvidia: 'rtx-4070', amd: 'rx-7900-xtx' };
+  if (defaults[vendor] && list.find(g => g.id === defaults[vendor])) sel.value = defaults[vendor];
+}
+
+// When the user picks Apple Silicon, GPU and RAM dropdowns are irrelevant
+// (the SoC has unified memory and integrated graphics). Hide them and show a hint.
+function applyApplePlatformConstraints() {
+  const cpuVendor = document.getElementById('custom-cpu-vendor').value;
+  const isApple = cpuVendor === 'apple';
+  const gpuVendor = document.getElementById('custom-gpu-vendor');
+  const gpuWrap = document.getElementById('custom-gpu-wrap');
+  const noteId = 'apple-silicon-note';
+  let note = document.getElementById(noteId);
+
+  if (isApple) {
+    gpuVendor.value = 'none';
+    gpuVendor.disabled = true;
+    gpuWrap.classList.add('hidden');
+    if (!note) {
+      note = document.createElement('div');
+      note.id = noteId;
+      note.className = 'sm:col-span-2 text-xs text-indigo-700 bg-indigo-50 border border-indigo-100 rounded-lg px-3 py-2';
+      note.textContent = 'Apple Silicon uses unified memory and integrated graphics. The GPU dropdown and DDR4/DDR5 settings below are ignored — pick a preset MacBook for an exact unified-memory bandwidth match.';
+      gpuVendor.closest('.grid').appendChild(note);
+    }
+  } else {
+    gpuVendor.disabled = false;
+    if (note) note.remove();
+  }
+}
+
+// Speed grades per generation. Stepped at common JEDEC / popular XMP values.
+const RAM_SPEEDS = {
+  ddr4: [2400, 2666, 2933, 3000, 3200, 3600, 3733, 4000],
+  ddr5: [4800, 5200, 5600, 6000, 6400, 6800, 7200, 7600, 8000],
+};
+const RAM_DEFAULT_SPEED = { ddr4: 3200, ddr5: 6000 };
+
+function populateRamSpeeds(gen) {
+  const sel = document.getElementById('custom-ram-speed');
+  // Apply user-requested ranges: DDR4 2400-4000, DDR5 5600-8000.
+  const min = gen === 'ddr4' ? 2400 : 5600;
+  const max = gen === 'ddr4' ? 4000 : 8000;
+  const options = RAM_SPEEDS[gen].filter(s => s >= min && s <= max);
+  const prev = parseInt(sel.value, 10);
+  const def = options.includes(RAM_DEFAULT_SPEED[gen]) ? RAM_DEFAULT_SPEED[gen] : options[0];
+  const selected = options.includes(prev) ? prev : def;
+  sel.innerHTML = options.map(s => `<option value="${s}" ${s === selected ? 'selected' : ''}>${s} MT/s</option>`).join('');
 }
 
 function populateSelects() {
@@ -65,32 +155,39 @@ function populateSelects() {
   presetSel.addEventListener('change', () => { populateVariants(); render(); });
   document.getElementById('preset-variant').addEventListener('change', render);
 
-  // Custom: CPUs
-  document.getElementById('custom-cpu').innerHTML = state.components.cpus
-    .map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+  // Custom: CPU & GPU lists are populated based on the selected brand.
+  populateCpus(document.getElementById('custom-cpu-vendor').value);
+  populateGpus(document.getElementById('custom-gpu-vendor').value);
+  applyApplePlatformConstraints();
 
-  // Custom: GPUs
-  document.getElementById('custom-gpu').innerHTML = state.components.gpus
-    .map(g => `<option value="${g.id}">${g.name}</option>`).join('');
-
-  // Custom: RAM types
-  document.getElementById('custom-ram-type').innerHTML = state.components.ram_types
-    .filter(r => r.id !== 'unified')
-    .map(r => `<option value="${r.id}">${r.name}</option>`).join('');
+  document.getElementById('custom-cpu-vendor').addEventListener('change', e => {
+    populateCpus(e.target.value);
+    applyApplePlatformConstraints();
+    render();
+  });
+  document.getElementById('custom-gpu-vendor').addEventListener('change', e => {
+    populateGpus(e.target.value);
+    render();
+  });
 
   // Custom: storage
   document.getElementById('custom-storage').innerHTML = state.components.storage_types
     .map(s => `<option value="${s.id}">${s.name}</option>`).join('');
-
-  // Set sensible defaults for custom (RTX 4070 + DDR5-6000 desktop).
-  document.getElementById('custom-cpu').value = 'amd-7700x';
-  document.getElementById('custom-gpu').value = 'rtx-4070';
-  document.getElementById('custom-ram-type').value = 'ddr5-6000';
   document.getElementById('custom-storage').value = 'nvme-gen4';
 
-  // Wire change events on custom inputs.
-  ['custom-cpu', 'custom-gpu', 'custom-ram-type', 'custom-ram-gb', 'custom-storage']
+  // Populate the speed dropdown based on generation; repopulate when generation changes.
+  populateRamSpeeds(document.getElementById('custom-ram-gen').value);
+  document.getElementById('custom-ram-gen').addEventListener('change', e => {
+    populateRamSpeeds(e.target.value);
+    render();
+  });
+
+  // Wire change events on the model-level dropdowns.
+  ['custom-cpu', 'custom-gpu', 'custom-ram-speed', 'custom-ram-sticks', 'custom-ram-gb', 'custom-storage']
     .forEach(id => document.getElementById(id).addEventListener('change', render));
+  // Re-apply Apple constraints whenever the CPU model changes (e.g. user
+  // switches to Apple via brand and we want the note to appear).
+  document.getElementById('custom-cpu').addEventListener('change', applyApplePlatformConstraints);
   document.getElementById('custom-ram-gb').addEventListener('input', render);
 }
 

@@ -65,27 +65,64 @@
         <div class="grid sm:grid-cols-2 gap-4">
           <label class="block">
             <span class="block text-sm font-medium mb-1">
-              CPU
-              <span class="info-tip" data-tip="The processor handles inference when there's no GPU. Apple Silicon CPUs are unusually good at this thanks to unified memory.">?</span>
+              CPU brand
+              <span class="info-tip" data-tip="Pick Apple Silicon for M-series chips (uses unified memory), or Intel/AMD for desktop CPUs.">?</span>
             </span>
+            <select id="custom-cpu-vendor" class="select">
+              <option value="apple">Apple Silicon</option>
+              <option value="intel">Intel</option>
+              <option value="amd" selected>AMD</option>
+            </select>
+          </label>
+          <label class="block">
+            <span class="block text-sm font-medium mb-1">CPU model</span>
             <select id="custom-cpu" class="select"></select>
           </label>
           <label class="block">
             <span class="block text-sm font-medium mb-1">
-              GPU
+              GPU brand
               <span class="info-tip" data-tip="A GPU with enough VRAM is the fastest way to run models. The model has to fit entirely in VRAM to get the GPU speed boost.">?</span>
             </span>
+            <select id="custom-gpu-vendor" class="select">
+              <option value="none">No discrete GPU</option>
+              <option value="nvidia" selected>NVIDIA</option>
+              <option value="amd">AMD</option>
+            </select>
+          </label>
+          <label class="block" id="custom-gpu-wrap">
+            <span class="block text-sm font-medium mb-1">GPU model</span>
             <select id="custom-gpu" class="select"></select>
           </label>
           <label class="block">
             <span class="block text-sm font-medium mb-1">
-              RAM type & speed
-              <span class="info-tip" data-tip="On CPU-only setups, RAM speed (bandwidth) directly limits how many tokens per second you'll get.">?</span>
+              RAM generation
+              <span class="info-tip" data-tip="DDR5 is roughly 2× faster than DDR4 at the same speed grade. On CPU-only setups, this directly affects tokens per second.">?</span>
             </span>
-            <select id="custom-ram-type" class="select"></select>
+            <select id="custom-ram-gen" class="select">
+              <option value="ddr4">DDR4</option>
+              <option value="ddr5" selected>DDR5</option>
+            </select>
           </label>
           <label class="block">
-            <span class="block text-sm font-medium mb-1">RAM capacity (GB)</span>
+            <span class="block text-sm font-medium mb-1">
+              RAM speed (MT/s)
+              <span class="info-tip" data-tip="Higher MT/s = more memory bandwidth = faster token generation when running on CPU.">?</span>
+            </span>
+            <select id="custom-ram-speed" class="select"></select>
+          </label>
+          <label class="block">
+            <span class="block text-sm font-medium mb-1">
+              RAM configuration
+              <span class="info-tip" data-tip="2 sticks (dual channel) doubles the bandwidth vs 1 stick. 4 sticks on consumer platforms is still dual channel — same bandwidth, just more capacity.">?</span>
+            </span>
+            <select id="custom-ram-sticks" class="select">
+              <option value="1">1 stick (single channel)</option>
+              <option value="2" selected>2 sticks (dual channel)</option>
+              <option value="4">4 sticks (dual channel)</option>
+            </select>
+          </label>
+          <label class="block">
+            <span class="block text-sm font-medium mb-1">RAM capacity (GB total)</span>
             <input id="custom-ram-gb" type="number" min="4" step="4" value="32" class="select" />
           </label>
         </div>

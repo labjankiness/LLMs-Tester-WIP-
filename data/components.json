@@ -14,12 +14,12 @@
     { "id": "apple-m4",        "name": "Apple M4",           "platform": "apple-silicon", "memory_bandwidth_gbps": 120, "cores": 10, "year": 2024 },
     { "id": "apple-m4-pro",    "name": "Apple M4 Pro",       "platform": "apple-silicon", "memory_bandwidth_gbps": 273, "cores": 14, "year": 2024 },
     { "id": "apple-m4-max",    "name": "Apple M4 Max",       "platform": "apple-silicon", "memory_bandwidth_gbps": 546, "cores": 16, "year": 2024 },
-    { "id": "intel-i5-13600k", "name": "Intel Core i5-13600K","platform": "x86",          "memory_bandwidth_gbps": 76,  "cores": 14, "year": 2022 },
-    { "id": "intel-i7-13700k", "name": "Intel Core i7-13700K","platform": "x86",          "memory_bandwidth_gbps": 76,  "cores": 16, "year": 2022 },
-    { "id": "intel-i9-14900k", "name": "Intel Core i9-14900K","platform": "x86",          "memory_bandwidth_gbps": 89,  "cores": 24, "year": 2023 },
-    { "id": "amd-7700x",       "name": "AMD Ryzen 7 7700X",  "platform": "x86",           "memory_bandwidth_gbps": 83,  "cores": 8,  "year": 2022 },
-    { "id": "amd-7950x",       "name": "AMD Ryzen 9 7950X",  "platform": "x86",           "memory_bandwidth_gbps": 83,  "cores": 16, "year": 2022 },
-    { "id": "amd-9950x",       "name": "AMD Ryzen 9 9950X",  "platform": "x86",           "memory_bandwidth_gbps": 89,  "cores": 16, "year": 2024 }
+    { "id": "intel-i5-13600k", "name": "Intel Core i5-13600K","platform": "x86", "vendor": "intel", "memory_bandwidth_gbps": 76,  "cores": 14, "year": 2022 },
+    { "id": "intel-i7-13700k", "name": "Intel Core i7-13700K","platform": "x86", "vendor": "intel", "memory_bandwidth_gbps": 76,  "cores": 16, "year": 2022 },
+    { "id": "intel-i9-14900k", "name": "Intel Core i9-14900K","platform": "x86", "vendor": "intel", "memory_bandwidth_gbps": 89,  "cores": 24, "year": 2023 },
+    { "id": "amd-7700x",       "name": "AMD Ryzen 7 7700X",  "platform": "x86", "vendor": "amd",   "memory_bandwidth_gbps": 83,  "cores": 8,  "year": 2022 },
+    { "id": "amd-7950x",       "name": "AMD Ryzen 9 7950X",  "platform": "x86", "vendor": "amd",   "memory_bandwidth_gbps": 83,  "cores": 16, "year": 2022 },
+    { "id": "amd-9950x",       "name": "AMD Ryzen 9 9950X",  "platform": "x86", "vendor": "amd",   "memory_bandwidth_gbps": 89,  "cores": 16, "year": 2024 }
   ],
   "gpus": [
     { "id": "none",            "name": "No discrete GPU",    "vram_gb": 0,    "memory_bandwidth_gbps": 0,    "vendor": "none" },
