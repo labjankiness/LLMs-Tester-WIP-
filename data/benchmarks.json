@@ -43,8 +43,8 @@
     { "cpu_id": "intel-i9-14900k", "gpu_id": "rtx-4090",      "model_id": "qwen2.5-14b",  "quant_label": "Q4_K_M", "format": "gguf", "tokens_per_second": 70,  "source": "community" },
     { "cpu_id": "intel-i9-14900k", "gpu_id": "rtx-4090",      "model_id": "qwen2.5-32b",  "quant_label": "Q4_K_M", "format": "gguf", "tokens_per_second": 35,  "source": "community" },
     { "cpu_id": "intel-i9-14900k", "gpu_id": "rtx-4090",      "model_id": "mixtral-8x7b", "quant_label": "Q4_K_M", "format": "gguf", "tokens_per_second": 40,  "source": "community" },
-    { "cpu_id": "amd-9950x",       "gpu_id": "rtx-5090",      "model_id": "llama3.1-8b",  "quant_label": "Q4_K_M", "format": "gguf", "tokens_per_second": 175, "source": "community" },
-    { "cpu_id": "amd-9950x",       "gpu_id": "rtx-5090",      "model_id": "llama3.1-70b", "quant_label": "Q4_K_M", "format": "gguf", "tokens_per_second": 22,  "source": "community" },
+    { "cpu_id": "amd-7950x",       "gpu_id": "rtx-5090",      "model_id": "llama3.1-8b",  "quant_label": "Q4_K_M", "format": "gguf", "tokens_per_second": 175, "source": "community" },
+    { "cpu_id": "amd-7950x",       "gpu_id": "rtx-5090",      "model_id": "llama3.1-70b", "quant_label": "Q4_K_M", "format": "gguf", "tokens_per_second": 22,  "source": "community" },
     { "cpu_id": "amd-7950x",       "gpu_id": "rx-7900-xtx",   "model_id": "llama3.1-8b",  "quant_label": "Q4_K_M", "format": "gguf", "tokens_per_second": 75,  "source": "community" }
   ]
 }

@@ -116,6 +116,23 @@ function populateCpus(vendor) {
   const defaults = { apple: 'apple-m3-pro', intel: 'intel-i9-14900k', amd: 'amd-7700x' };
   const def = list.find(c => c.id === defaults[vendor]) ? defaults[vendor] : (list[0] && list[0].id);
   setSelectOptions('custom-cpu', html, def);
+  syncRamGenToCpu();
+}
+
+// Restricts the RAM generation dropdown to whatever the chosen CPU supports.
+// AMD 5000 series only supports DDR4; AMD 7000+ only DDR5; Intel 12-14 supports both.
+// Called after CPU model changes.
+function syncRamGenToCpu() {
+  const cpu = getComponent('cpus', document.getElementById('custom-cpu').value);
+  if (!cpu) return;
+  if (cpu.platform === 'apple-silicon') return; // RAM gen irrelevant for Apple Silicon.
+  const supported = cpu.ddr_support || ['ddr4', 'ddr5'];
+  const labels = { ddr4: 'DDR4', ddr5: 'DDR5' };
+  const html = supported.map(g => `<option value="${g}">${labels[g]}</option>`).join('');
+  const current = document.getElementById('custom-ram-gen').value;
+  const next = supported.includes(current) ? current : supported[0];
+  setSelectOptions('custom-ram-gen', html, next);
+  populateRamSpeeds(next);
 }
 
 function populateGpus(vendor) {
@@ -225,9 +242,12 @@ function populateSelects() {
   // Wire change events on the model-level dropdowns.
   ['custom-cpu', 'custom-gpu', 'custom-ram-speed', 'custom-ram-sticks', 'custom-ram-gb', 'custom-storage']
     .forEach(id => document.getElementById(id).addEventListener('change', render));
-  // Re-apply Apple constraints whenever the CPU model changes (e.g. user
-  // switches to Apple via brand and we want the note to appear).
-  document.getElementById('custom-cpu').addEventListener('change', applyApplePlatformConstraints);
+  // When the CPU model changes, re-apply Apple constraints AND sync the RAM
+  // gen options to whatever DDR generations this CPU supports.
+  document.getElementById('custom-cpu').addEventListener('change', () => {
+    applyApplePlatformConstraints();
+    syncRamGenToCpu();
+  });
   document.getElementById('custom-ram-gb').addEventListener('input', render);
 }
 

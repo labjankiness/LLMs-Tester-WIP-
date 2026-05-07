@@ -229,7 +229,7 @@
       "id": "enthusiast-rtx5090",
       "name": "Enthusiast Build — RTX 5090",
       "category": "PC Build",
-      "cpu_id": "amd-9950x", "gpu_id": "rtx-5090", "ram_type_id": "ddr5-6400", "storage_id": "nvme-gen5",
+      "cpu_id": "amd-7950x", "gpu_id": "rtx-5090", "ram_type_id": "ddr5-6400", "storage_id": "nvme-gen5",
       "platform": "x86",
       "variants": [
         { "label": "64 GB RAM",  "ram_gb": 64 },
