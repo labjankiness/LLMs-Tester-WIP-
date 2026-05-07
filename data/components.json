@@ -1,0 +1,56 @@
+{
+  "_comment": "Memory bandwidth (GB/s) is the single most important number for LLM inference speed. Higher = faster token generation.",
+  "cpus": [
+    { "id": "apple-m1",        "name": "Apple M1",           "platform": "apple-silicon", "memory_bandwidth_gbps": 68,  "cores": 8,  "year": 2020 },
+    { "id": "apple-m1-pro",    "name": "Apple M1 Pro",       "platform": "apple-silicon", "memory_bandwidth_gbps": 200, "cores": 10, "year": 2021 },
+    { "id": "apple-m1-max",    "name": "Apple M1 Max",       "platform": "apple-silicon", "memory_bandwidth_gbps": 400, "cores": 10, "year": 2021 },
+    { "id": "apple-m2",        "name": "Apple M2",           "platform": "apple-silicon", "memory_bandwidth_gbps": 100, "cores": 8,  "year": 2022 },
+    { "id": "apple-m2-pro",    "name": "Apple M2 Pro",       "platform": "apple-silicon", "memory_bandwidth_gbps": 200, "cores": 12, "year": 2023 },
+    { "id": "apple-m2-max",    "name": "Apple M2 Max",       "platform": "apple-silicon", "memory_bandwidth_gbps": 400, "cores": 12, "year": 2023 },
+    { "id": "apple-m2-ultra",  "name": "Apple M2 Ultra",     "platform": "apple-silicon", "memory_bandwidth_gbps": 800, "cores": 24, "year": 2023 },
+    { "id": "apple-m3",        "name": "Apple M3",           "platform": "apple-silicon", "memory_bandwidth_gbps": 100, "cores": 8,  "year": 2023 },
+    { "id": "apple-m3-pro",    "name": "Apple M3 Pro",       "platform": "apple-silicon", "memory_bandwidth_gbps": 150, "cores": 12, "year": 2023 },
+    { "id": "apple-m3-max",    "name": "Apple M3 Max",       "platform": "apple-silicon", "memory_bandwidth_gbps": 400, "cores": 16, "year": 2023 },
+    { "id": "apple-m4",        "name": "Apple M4",           "platform": "apple-silicon", "memory_bandwidth_gbps": 120, "cores": 10, "year": 2024 },
+    { "id": "apple-m4-pro",    "name": "Apple M4 Pro",       "platform": "apple-silicon", "memory_bandwidth_gbps": 273, "cores": 14, "year": 2024 },
+    { "id": "apple-m4-max",    "name": "Apple M4 Max",       "platform": "apple-silicon", "memory_bandwidth_gbps": 546, "cores": 16, "year": 2024 },
+    { "id": "intel-i5-13600k", "name": "Intel Core i5-13600K","platform": "x86",          "memory_bandwidth_gbps": 76,  "cores": 14, "year": 2022 },
+    { "id": "intel-i7-13700k", "name": "Intel Core i7-13700K","platform": "x86",          "memory_bandwidth_gbps": 76,  "cores": 16, "year": 2022 },
+    { "id": "intel-i9-14900k", "name": "Intel Core i9-14900K","platform": "x86",          "memory_bandwidth_gbps": 89,  "cores": 24, "year": 2023 },
+    { "id": "amd-7700x",       "name": "AMD Ryzen 7 7700X",  "platform": "x86",           "memory_bandwidth_gbps": 83,  "cores": 8,  "year": 2022 },
+    { "id": "amd-7950x",       "name": "AMD Ryzen 9 7950X",  "platform": "x86",           "memory_bandwidth_gbps": 83,  "cores": 16, "year": 2022 },
+    { "id": "amd-9950x",       "name": "AMD Ryzen 9 9950X",  "platform": "x86",           "memory_bandwidth_gbps": 89,  "cores": 16, "year": 2024 }
+  ],
+  "gpus": [
+    { "id": "none",            "name": "No discrete GPU",    "vram_gb": 0,    "memory_bandwidth_gbps": 0,    "vendor": "none" },
+    { "id": "rtx-3060-12gb",   "name": "NVIDIA RTX 3060 12GB","vram_gb": 12,  "memory_bandwidth_gbps": 360,  "vendor": "nvidia" },
+    { "id": "rtx-3070",        "name": "NVIDIA RTX 3070",    "vram_gb": 8,    "memory_bandwidth_gbps": 448,  "vendor": "nvidia" },
+    { "id": "rtx-3080",        "name": "NVIDIA RTX 3080",    "vram_gb": 10,   "memory_bandwidth_gbps": 760,  "vendor": "nvidia" },
+    { "id": "rtx-3090",        "name": "NVIDIA RTX 3090",    "vram_gb": 24,   "memory_bandwidth_gbps": 936,  "vendor": "nvidia" },
+    { "id": "rtx-4060",        "name": "NVIDIA RTX 4060",    "vram_gb": 8,    "memory_bandwidth_gbps": 272,  "vendor": "nvidia" },
+    { "id": "rtx-4060-ti-16",  "name": "NVIDIA RTX 4060 Ti 16GB","vram_gb": 16,"memory_bandwidth_gbps": 288, "vendor": "nvidia" },
+    { "id": "rtx-4070",        "name": "NVIDIA RTX 4070",    "vram_gb": 12,   "memory_bandwidth_gbps": 504,  "vendor": "nvidia" },
+    { "id": "rtx-4070-ti-super","name": "NVIDIA RTX 4070 Ti Super","vram_gb": 16,"memory_bandwidth_gbps": 672,"vendor": "nvidia" },
+    { "id": "rtx-4080",        "name": "NVIDIA RTX 4080",    "vram_gb": 16,   "memory_bandwidth_gbps": 717,  "vendor": "nvidia" },
+    { "id": "rtx-4090",        "name": "NVIDIA RTX 4090",    "vram_gb": 24,   "memory_bandwidth_gbps": 1008, "vendor": "nvidia" },
+    { "id": "rtx-5080",        "name": "NVIDIA RTX 5080",    "vram_gb": 16,   "memory_bandwidth_gbps": 960,  "vendor": "nvidia" },
+    { "id": "rtx-5090",        "name": "NVIDIA RTX 5090",    "vram_gb": 32,   "memory_bandwidth_gbps": 1792, "vendor": "nvidia" },
+    { "id": "rx-7900-xtx",     "name": "AMD RX 7900 XTX",    "vram_gb": 24,   "memory_bandwidth_gbps": 960,  "vendor": "amd" }
+  ],
+  "ram_types": [
+    { "id": "ddr4-3200",   "name": "DDR4-3200",   "bandwidth_per_channel_gbps": 25.6 },
+    { "id": "ddr4-3600",   "name": "DDR4-3600",   "bandwidth_per_channel_gbps": 28.8 },
+    { "id": "ddr5-4800",   "name": "DDR5-4800",   "bandwidth_per_channel_gbps": 38.4 },
+    { "id": "ddr5-5600",   "name": "DDR5-5600",   "bandwidth_per_channel_gbps": 44.8 },
+    { "id": "ddr5-6000",   "name": "DDR5-6000",   "bandwidth_per_channel_gbps": 48.0 },
+    { "id": "ddr5-6400",   "name": "DDR5-6400",   "bandwidth_per_channel_gbps": 51.2 },
+    { "id": "unified",     "name": "Unified Memory (Apple)", "bandwidth_per_channel_gbps": 0, "_comment": "Bandwidth comes from the SoC, not the RAM module." }
+  ],
+  "storage_types": [
+    { "id": "hdd",         "name": "HDD (Hard Drive)",       "read_mbps": 150,   "write_mbps": 150 },
+    { "id": "sata-ssd",    "name": "SATA SSD",               "read_mbps": 550,   "write_mbps": 520 },
+    { "id": "nvme-gen3",   "name": "NVMe Gen3",              "read_mbps": 3500,  "write_mbps": 3000 },
+    { "id": "nvme-gen4",   "name": "NVMe Gen4",              "read_mbps": 7000,  "write_mbps": 6500 },
+    { "id": "nvme-gen5",   "name": "NVMe Gen5",              "read_mbps": 14000, "write_mbps": 12000 }
+  ]
+}

@@ -1,0 +1,97 @@
+/* TokenFit custom styles. Tailwind handles most things; this file is for component-level styles. */
+
+.select {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: white;
+  font-size: 0.875rem;
+}
+.select:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.tab-btn {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #64748b;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  cursor: pointer;
+}
+.tab-btn:hover { color: #0f172a; }
+.tab-btn.active {
+  color: #4f46e5;
+  border-bottom-color: #4f46e5;
+}
+
+.info-tip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #e2e8f0;
+  color: #475569;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: help;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+.info-tip:hover { background: #cbd5e1; }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 500;
+}
+.badge-fast { background: #dcfce7; color: #166534; }
+.badge-ok   { background: #fef3c7; color: #92400e; }
+.badge-slow { background: #fed7aa; color: #9a3412; }
+.badge-no   { background: #fee2e2; color: #991b1b; }
+
+.badge-measured  { background: #dbeafe; color: #1e40af; }
+.badge-estimated { background: #f1f5f9; color: #475569; }
+
+.format-pill {
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: #f1f5f9;
+  color: #334155;
+}
+.format-pill.mlx { background: #ede9fe; color: #6d28d9; }
+.format-pill.gguf { background: #ecfeff; color: #0e7490; }
+
+.expand-row {
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+}
+.expand-row td {
+  padding: 12px 16px;
+  font-size: 13px;
+  color: #475569;
+  line-height: 1.5;
+}
+
+tbody tr.row-main {
+  border-top: 1px solid #f1f5f9;
+}
+tbody tr.row-main:hover {
+  background: #f8fafc;
+  cursor: pointer;
+}
+tbody tr.row-main td {
+  padding: 12px 16px 12px 0;
+}

@@ -1,0 +1,111 @@
+{
+  "_comment": "Preset machines that auto-fill specs. Each variant inherits from the base machine. Apple Silicon laptops support both Ollama (GGUF) and MLX models.",
+  "presets": [
+    {
+      "id": "macbook-air-m2",
+      "name": "MacBook Air (M2, 2022)",
+      "cpu_id": "apple-m2",
+      "gpu_id": "none",
+      "ram_type_id": "unified",
+      "storage_id": "nvme-gen4",
+      "platform": "apple-silicon",
+      "variants": [
+        { "label": "8 GB RAM",  "ram_gb": 8 },
+        { "label": "16 GB RAM", "ram_gb": 16 },
+        { "label": "24 GB RAM", "ram_gb": 24 }
+      ]
+    },
+    {
+      "id": "macbook-pro-m2-pro-14",
+      "name": "MacBook Pro 14\" (M2 Pro, 2023)",
+      "cpu_id": "apple-m2-pro",
+      "gpu_id": "none",
+      "ram_type_id": "unified",
+      "storage_id": "nvme-gen4",
+      "platform": "apple-silicon",
+      "variants": [
+        { "label": "16 GB RAM", "ram_gb": 16 },
+        { "label": "32 GB RAM", "ram_gb": 32 }
+      ]
+    },
+    {
+      "id": "macbook-pro-m3-pro-14",
+      "name": "MacBook Pro 14\" (M3 Pro, 2023)",
+      "cpu_id": "apple-m3-pro",
+      "gpu_id": "none",
+      "ram_type_id": "unified",
+      "storage_id": "nvme-gen4",
+      "platform": "apple-silicon",
+      "variants": [
+        { "label": "18 GB RAM", "ram_gb": 18 },
+        { "label": "36 GB RAM", "ram_gb": 36 }
+      ]
+    },
+    {
+      "id": "macbook-pro-m3-max-16",
+      "name": "MacBook Pro 16\" (M3 Max, 2023)",
+      "cpu_id": "apple-m3-max",
+      "gpu_id": "none",
+      "ram_type_id": "unified",
+      "storage_id": "nvme-gen4",
+      "platform": "apple-silicon",
+      "variants": [
+        { "label": "36 GB RAM",  "ram_gb": 36 },
+        { "label": "48 GB RAM",  "ram_gb": 48 },
+        { "label": "64 GB RAM",  "ram_gb": 64 },
+        { "label": "128 GB RAM", "ram_gb": 128 }
+      ]
+    },
+    {
+      "id": "macbook-pro-m4-pro-14",
+      "name": "MacBook Pro 14\" (M4 Pro, 2024)",
+      "cpu_id": "apple-m4-pro",
+      "gpu_id": "none",
+      "ram_type_id": "unified",
+      "storage_id": "nvme-gen4",
+      "platform": "apple-silicon",
+      "variants": [
+        { "label": "24 GB RAM", "ram_gb": 24 },
+        { "label": "48 GB RAM", "ram_gb": 48 }
+      ]
+    },
+    {
+      "id": "gaming-rtx4070",
+      "name": "Gaming PC — RTX 4070 build",
+      "cpu_id": "amd-7700x",
+      "gpu_id": "rtx-4070",
+      "ram_type_id": "ddr5-6000",
+      "storage_id": "nvme-gen4",
+      "platform": "x86",
+      "variants": [
+        { "label": "32 GB RAM", "ram_gb": 32 }
+      ]
+    },
+    {
+      "id": "enthusiast-rtx4090",
+      "name": "Enthusiast PC — RTX 4090 build",
+      "cpu_id": "intel-i9-14900k",
+      "gpu_id": "rtx-4090",
+      "ram_type_id": "ddr5-6400",
+      "storage_id": "nvme-gen5",
+      "platform": "x86",
+      "variants": [
+        { "label": "64 GB RAM",  "ram_gb": 64 },
+        { "label": "128 GB RAM", "ram_gb": 128 }
+      ]
+    },
+    {
+      "id": "budget-rtx3060",
+      "name": "Budget PC — RTX 3060 12GB build",
+      "cpu_id": "amd-7700x",
+      "gpu_id": "rtx-3060-12gb",
+      "ram_type_id": "ddr5-5600",
+      "storage_id": "nvme-gen4",
+      "platform": "x86",
+      "variants": [
+        { "label": "16 GB RAM", "ram_gb": 16 },
+        { "label": "32 GB RAM", "ram_gb": 32 }
+      ]
+    }
+  ]
+}

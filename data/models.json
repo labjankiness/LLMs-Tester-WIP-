@@ -1,0 +1,148 @@
+{
+  "_comment": "Popular local LLMs. 'gguf' = Ollama-compatible; 'mlx' = Apple Silicon-only via mlx-community on HuggingFace. size_gb is the disk/memory footprint at that quant. min_ram_gb is total memory needed (model + ~2GB overhead for KV cache and OS).",
+  "models": [
+    {
+      "id": "llama3.1-8b",
+      "name": "Llama 3.1 8B",
+      "params_billion": 8,
+      "ollama_tag": "llama3.1:8b",
+      "mlx_repo": "mlx-community/Meta-Llama-3.1-8B-Instruct-4bit",
+      "description": "Meta's general-purpose model. Great all-rounder for chat and Q&A.",
+      "quants": [
+        { "label": "Q4_K_M", "format": "gguf", "size_gb": 4.7,  "min_ram_gb": 7 },
+        { "label": "Q5_K_M", "format": "gguf", "size_gb": 5.7,  "min_ram_gb": 8 },
+        { "label": "Q8_0",   "format": "gguf", "size_gb": 8.5,  "min_ram_gb": 11 },
+        { "label": "4-bit",  "format": "mlx",  "size_gb": 4.5,  "min_ram_gb": 7 },
+        { "label": "8-bit",  "format": "mlx",  "size_gb": 8.5,  "min_ram_gb": 11 }
+      ]
+    },
+    {
+      "id": "llama3.2-3b",
+      "name": "Llama 3.2 3B",
+      "params_billion": 3,
+      "ollama_tag": "llama3.2:3b",
+      "mlx_repo": "mlx-community/Llama-3.2-3B-Instruct-4bit",
+      "description": "Smaller, faster Llama. Great for low-end hardware.",
+      "quants": [
+        { "label": "Q4_K_M", "format": "gguf", "size_gb": 2.0, "min_ram_gb": 4 },
+        { "label": "Q8_0",   "format": "gguf", "size_gb": 3.4, "min_ram_gb": 5 },
+        { "label": "4-bit",  "format": "mlx",  "size_gb": 1.9, "min_ram_gb": 4 }
+      ]
+    },
+    {
+      "id": "mistral-7b",
+      "name": "Mistral 7B",
+      "params_billion": 7,
+      "ollama_tag": "mistral:7b",
+      "mlx_repo": "mlx-community/Mistral-7B-Instruct-v0.3-4bit",
+      "description": "Fast, efficient model from Mistral AI. Strong reasoning for its size.",
+      "quants": [
+        { "label": "Q4_K_M", "format": "gguf", "size_gb": 4.1, "min_ram_gb": 6 },
+        { "label": "Q8_0",   "format": "gguf", "size_gb": 7.7, "min_ram_gb": 10 },
+        { "label": "4-bit",  "format": "mlx",  "size_gb": 4.0, "min_ram_gb": 6 }
+      ]
+    },
+    {
+      "id": "qwen2.5-7b",
+      "name": "Qwen 2.5 7B",
+      "params_billion": 7,
+      "ollama_tag": "qwen2.5:7b",
+      "mlx_repo": "mlx-community/Qwen2.5-7B-Instruct-4bit",
+      "description": "Alibaba's multilingual model. Strong at coding and math.",
+      "quants": [
+        { "label": "Q4_K_M", "format": "gguf", "size_gb": 4.7, "min_ram_gb": 7 },
+        { "label": "Q8_0",   "format": "gguf", "size_gb": 8.1, "min_ram_gb": 11 },
+        { "label": "4-bit",  "format": "mlx",  "size_gb": 4.5, "min_ram_gb": 7 }
+      ]
+    },
+    {
+      "id": "qwen2.5-14b",
+      "name": "Qwen 2.5 14B",
+      "params_billion": 14,
+      "ollama_tag": "qwen2.5:14b",
+      "mlx_repo": "mlx-community/Qwen2.5-14B-Instruct-4bit",
+      "description": "Mid-size Qwen. A solid step up in quality.",
+      "quants": [
+        { "label": "Q4_K_M", "format": "gguf", "size_gb": 9.0,  "min_ram_gb": 12 },
+        { "label": "Q8_0",   "format": "gguf", "size_gb": 15.7, "min_ram_gb": 18 },
+        { "label": "4-bit",  "format": "mlx",  "size_gb": 8.5,  "min_ram_gb": 11 }
+      ]
+    },
+    {
+      "id": "qwen2.5-32b",
+      "name": "Qwen 2.5 32B",
+      "params_billion": 32,
+      "ollama_tag": "qwen2.5:32b",
+      "mlx_repo": "mlx-community/Qwen2.5-32B-Instruct-4bit",
+      "description": "Larger Qwen. Closer to GPT-4 quality on many tasks.",
+      "quants": [
+        { "label": "Q4_K_M", "format": "gguf", "size_gb": 19.9, "min_ram_gb": 24 },
+        { "label": "Q5_K_M", "format": "gguf", "size_gb": 23.3, "min_ram_gb": 28 },
+        { "label": "4-bit",  "format": "mlx",  "size_gb": 18.5, "min_ram_gb": 22 }
+      ]
+    },
+    {
+      "id": "phi3.5-mini",
+      "name": "Phi-3.5 Mini (3.8B)",
+      "params_billion": 3.8,
+      "ollama_tag": "phi3.5",
+      "mlx_repo": "mlx-community/Phi-3.5-mini-instruct-4bit",
+      "description": "Microsoft's compact but capable model. Punches above its weight.",
+      "quants": [
+        { "label": "Q4_K_M", "format": "gguf", "size_gb": 2.2, "min_ram_gb": 4 },
+        { "label": "Q8_0",   "format": "gguf", "size_gb": 4.1, "min_ram_gb": 6 },
+        { "label": "4-bit",  "format": "mlx",  "size_gb": 2.1, "min_ram_gb": 4 }
+      ]
+    },
+    {
+      "id": "gemma2-9b",
+      "name": "Gemma 2 9B",
+      "params_billion": 9,
+      "ollama_tag": "gemma2:9b",
+      "mlx_repo": "mlx-community/gemma-2-9b-it-4bit",
+      "description": "Google's open model. Good at instruction-following.",
+      "quants": [
+        { "label": "Q4_K_M", "format": "gguf", "size_gb": 5.4, "min_ram_gb": 8 },
+        { "label": "Q8_0",   "format": "gguf", "size_gb": 9.8, "min_ram_gb": 12 },
+        { "label": "4-bit",  "format": "mlx",  "size_gb": 5.2, "min_ram_gb": 8 }
+      ]
+    },
+    {
+      "id": "mixtral-8x7b",
+      "name": "Mixtral 8x7B (MoE)",
+      "params_billion": 47,
+      "ollama_tag": "mixtral:8x7b",
+      "mlx_repo": "mlx-community/Mixtral-8x7B-Instruct-v0.1-4bit",
+      "description": "Mixture-of-experts: huge total params but only ~13B active per token, so fast for its quality.",
+      "quants": [
+        { "label": "Q4_K_M", "format": "gguf", "size_gb": 26.4, "min_ram_gb": 32 },
+        { "label": "4-bit",  "format": "mlx",  "size_gb": 25.5, "min_ram_gb": 30 }
+      ]
+    },
+    {
+      "id": "llama3.1-70b",
+      "name": "Llama 3.1 70B",
+      "params_billion": 70,
+      "ollama_tag": "llama3.1:70b",
+      "mlx_repo": "mlx-community/Meta-Llama-3.1-70B-Instruct-4bit",
+      "description": "Top-tier open model. Needs a lot of memory but rivals commercial models.",
+      "quants": [
+        { "label": "Q4_K_M", "format": "gguf", "size_gb": 40.0, "min_ram_gb": 48 },
+        { "label": "Q5_K_M", "format": "gguf", "size_gb": 49.9, "min_ram_gb": 56 },
+        { "label": "4-bit",  "format": "mlx",  "size_gb": 38.0, "min_ram_gb": 44 }
+      ]
+    },
+    {
+      "id": "deepseek-coder-v2-16b",
+      "name": "DeepSeek-Coder V2 16B",
+      "params_billion": 16,
+      "ollama_tag": "deepseek-coder-v2:16b",
+      "mlx_repo": "mlx-community/DeepSeek-Coder-V2-Lite-Instruct-4bit",
+      "description": "Specialized for code. Great for IDE-integrated assistants.",
+      "quants": [
+        { "label": "Q4_K_M", "format": "gguf", "size_gb": 8.9, "min_ram_gb": 12 },
+        { "label": "4-bit",  "format": "mlx",  "size_gb": 8.5, "min_ram_gb": 11 }
+      ]
+    }
+  ]
+}

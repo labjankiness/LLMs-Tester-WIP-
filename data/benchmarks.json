@@ -1,0 +1,26 @@
+{
+  "_comment": "Real-world measured tokens-per-second numbers, sourced from r/LocalLLaMA threads, Ollama discussions, and YouTube reviews. Used as ground truth where available; falls back to formula-based estimation otherwise. Submit corrections via PR.",
+  "_schema": {
+    "cpu_id": "matches components.json cpus[].id",
+    "gpu_id": "matches components.json gpus[].id, or 'none'",
+    "model_id": "matches models.json models[].id",
+    "quant_label": "matches the model's quants[].label",
+    "format": "gguf or mlx",
+    "tokens_per_second": "measured single-stream generation t/s",
+    "source": "where the number came from"
+  },
+  "benchmarks": [
+    { "cpu_id": "apple-m2",       "gpu_id": "none", "model_id": "llama3.1-8b",  "quant_label": "Q4_K_M", "format": "gguf", "tokens_per_second": 18, "source": "community" },
+    { "cpu_id": "apple-m2",       "gpu_id": "none", "model_id": "llama3.1-8b",  "quant_label": "4-bit",  "format": "mlx",  "tokens_per_second": 24, "source": "community" },
+    { "cpu_id": "apple-m2-pro",   "gpu_id": "none", "model_id": "llama3.1-8b",  "quant_label": "Q4_K_M", "format": "gguf", "tokens_per_second": 32, "source": "community" },
+    { "cpu_id": "apple-m2-pro",   "gpu_id": "none", "model_id": "llama3.1-8b",  "quant_label": "4-bit",  "format": "mlx",  "tokens_per_second": 42, "source": "community" },
+    { "cpu_id": "apple-m3-max",   "gpu_id": "none", "model_id": "llama3.1-8b",  "quant_label": "Q4_K_M", "format": "gguf", "tokens_per_second": 60, "source": "community" },
+    { "cpu_id": "apple-m3-max",   "gpu_id": "none", "model_id": "llama3.1-8b",  "quant_label": "4-bit",  "format": "mlx",  "tokens_per_second": 78, "source": "community" },
+    { "cpu_id": "apple-m3-max",   "gpu_id": "none", "model_id": "llama3.1-70b", "quant_label": "4-bit",  "format": "mlx",  "tokens_per_second": 8,  "source": "community" },
+    { "cpu_id": "apple-m4-pro",   "gpu_id": "none", "model_id": "llama3.1-8b",  "quant_label": "4-bit",  "format": "mlx",  "tokens_per_second": 55, "source": "community" },
+    { "cpu_id": "amd-7700x",      "gpu_id": "rtx-4070", "model_id": "llama3.1-8b", "quant_label": "Q4_K_M", "format": "gguf", "tokens_per_second": 65, "source": "community" },
+    { "cpu_id": "intel-i9-14900k","gpu_id": "rtx-4090", "model_id": "llama3.1-8b", "quant_label": "Q4_K_M", "format": "gguf", "tokens_per_second": 110,"source": "community" },
+    { "cpu_id": "intel-i9-14900k","gpu_id": "rtx-4090", "model_id": "qwen2.5-32b","quant_label": "Q4_K_M", "format": "gguf", "tokens_per_second": 35, "source": "community" },
+    { "cpu_id": "amd-7700x",      "gpu_id": "rtx-3060-12gb", "model_id": "llama3.1-8b", "quant_label": "Q4_K_M", "format": "gguf", "tokens_per_second": 38, "source": "community" }
+  ]
+}
