@@ -131,6 +131,18 @@ tbody tr.row-main.expanded .chevron {
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
+/* Model links inside the results table */
+a.model-link {
+  color: #4f46e5;
+  text-decoration: none;
+  border-bottom: 1px dotted transparent;
+  transition: border-color 0.12s;
+}
+a.model-link:hover {
+  color: #3730a3;
+  border-bottom-color: #6366f1;
+}
+
 .summary-chip.fast .count { color: #16a34a; }
 .summary-chip.ok   .count { color: #d97706; }
 .summary-chip.slow .count { color: #ea580c; }

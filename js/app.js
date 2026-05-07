@@ -287,6 +287,18 @@ function statusBadge(status) {
   return `<span class="badge ${cls}">${label}</span>`;
 }
 
+// Returns the canonical download/info URL for this model+quant pair.
+// GGUF -> Ollama library page (so users see the right tag and quant options).
+// MLX  -> HuggingFace repo (which is already quant-specific).
+function modelLink(model, quant) {
+  if (quant.format === 'mlx') {
+    return `https://huggingface.co/${model.mlx_repo}`;
+  }
+  return `https://ollama.com/library/${model.ollama_tag}`;
+}
+
+const EXTERNAL_ICON = '<svg class="inline w-3 h-3 ml-0.5 -mt-0.5 opacity-60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>';
+
 function speedCell(row) {
   if (row.tokens_per_second == null) return '—';
   const srcBadge = row.source === 'measured'
@@ -323,14 +335,17 @@ function explainRow(hw, row) {
     formatNote = ` <em>(MLX format runs ~30% faster than GGUF on Apple Silicon because it uses Metal natively.)</em>`;
   }
 
+  const link = modelLink(m, q);
   const cmd = q.format === 'gguf'
     ? `<code class="bg-slate-100 px-1.5 py-0.5 rounded text-xs">ollama run ${m.ollama_tag}</code>`
     : `<code class="bg-slate-100 px-1.5 py-0.5 rounded text-xs">${m.mlx_repo}</code>`;
+  const linkLabel = q.format === 'gguf' ? 'Open on Ollama' : 'Open on HuggingFace';
 
   return `
     <p>${m.description}</p>
     <p class="mt-1.5">At <strong>${q.label}</strong>, this model ${where}. At ~${row.tokens_per_second} t/s it ${speedTalk}.${formatNote}</p>
     <p class="mt-1.5 text-slate-600">Total memory you have: ${totalMem} GB · Model needs: ${q.min_ram_gb} GB · Run with: ${cmd}</p>
+    <p class="mt-2"><a href="${link}" target="_blank" rel="noopener" class="model-link inline-flex items-center gap-1 text-indigo-600 hover:text-indigo-800 font-medium text-xs">${linkLabel}${EXTERNAL_ICON}</a></p>
   `;
 }
 
@@ -393,9 +408,13 @@ function render() {
   const body = document.getElementById('results-body');
   body.innerHTML = rows.map((row, i) => {
     const formatCls = row.quant.format === 'mlx' ? 'mlx' : 'gguf';
+    const link = modelLink(row.model, row.quant);
+    const linkTitle = row.quant.format === 'mlx'
+      ? 'Open the exact MLX repo on HuggingFace'
+      : 'Open this model on Ollama';
     return `
       <tr class="row-main" data-row="${i}">
-        <td class="font-medium">${row.model.name}</td>
+        <td class="font-medium"><a href="${link}" target="_blank" rel="noopener" class="model-link" title="${linkTitle}" data-link>${row.model.name}${EXTERNAL_ICON}</a></td>
         <td class="hidden sm:table-cell"><span class="format-pill ${formatCls}">${row.quant.format.toUpperCase()}</span></td>
         <td class="font-mono text-xs hidden md:table-cell">${row.quant.label}</td>
         <td class="font-mono text-xs hidden md:table-cell">${row.quant.size_gb} GB</td>
@@ -410,7 +429,9 @@ function render() {
   }).join('');
 
   body.querySelectorAll('tr.row-main').forEach(tr => {
-    tr.addEventListener('click', () => {
+    tr.addEventListener('click', e => {
+      // Clicking the model link should open the URL, not toggle the row.
+      if (e.target.closest('[data-link]')) return;
       const idx = tr.dataset.row;
       const exp = body.querySelector(`tr[data-expand="${idx}"]`);
       exp.classList.toggle('hidden');
