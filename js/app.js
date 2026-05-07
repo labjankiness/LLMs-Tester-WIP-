@@ -38,12 +38,16 @@ function enhanceSelects() {
 }
 
 // Replaces the underlying <select>'s options and reflects them in the wrapper.
+// Tom Select's .sync() doesn't remove options that no longer exist in the
+// underlying <select>, so we have to clearOptions() first.
 function setSelectOptions(id, html, value) {
   const el = document.getElementById(id);
   el.innerHTML = html;
   if (value !== undefined) el.value = value;
   const ts = state.tomSelects[id];
   if (ts) {
+    ts.clear(true);
+    ts.clearOptions();
     ts.sync();
     if (value !== undefined) ts.setValue(value, true);
   }
