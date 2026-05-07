@@ -87,6 +87,7 @@
 
 tbody tr.row-main {
   border-top: 1px solid #f1f5f9;
+  transition: background 0.12s ease;
 }
 tbody tr.row-main:hover {
   background: #f8fafc;
@@ -95,3 +96,42 @@ tbody tr.row-main:hover {
 tbody tr.row-main td {
   padding: 12px 16px 12px 0;
 }
+tbody tr.row-main td:first-child {
+  padding-left: 8px;
+}
+tbody tr.row-main.expanded {
+  background: #f1f5f9;
+}
+tbody tr.row-main .chevron {
+  display: inline-block;
+  transition: transform 0.18s ease;
+}
+tbody tr.row-main.expanded .chevron {
+  transform: rotate(180deg);
+}
+
+/* Summary chips */
+.summary-chip {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.summary-chip .count {
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.summary-chip .label {
+  font-size: 0.75rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.summary-chip.fast .count { color: #16a34a; }
+.summary-chip.ok   .count { color: #d97706; }
+.summary-chip.slow .count { color: #ea580c; }
+.summary-chip.no   .count { color: #dc2626; }

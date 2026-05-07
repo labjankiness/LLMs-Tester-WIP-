@@ -5,29 +5,39 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TokenFit — Will that AI model run on your computer?</title>
   <meta name="description" content="Find out which local AI models (Ollama, MLX) will run on your hardware, and how fast." />
+  <meta name="github-repo" content="labjankiness/LLMs-Tester-WIP-" />
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body class="bg-slate-50 text-slate-900 min-h-screen">
-  <!-- Header -->
-  <header class="bg-white border-b border-slate-200">
-    <div class="max-w-5xl mx-auto px-4 py-6">
-      <div class="flex items-center gap-3">
-        <span class="text-3xl">🦙</span>
-        <div>
-          <h1 class="text-2xl font-bold tracking-tight">TokenFit</h1>
-          <p class="text-sm text-slate-600">Will that AI model run on your computer? Find out in 10 seconds.</p>
-        </div>
+<body class="bg-slate-50 text-slate-900 min-h-screen antialiased">
+
+  <!-- Hero -->
+  <header class="bg-gradient-to-br from-indigo-600 via-indigo-500 to-purple-600 text-white">
+    <div class="max-w-5xl mx-auto px-4 py-12 sm:py-16">
+      <div class="flex items-center gap-3 mb-3">
+        <span class="text-4xl">🦙</span>
+        <h1 class="text-3xl sm:text-4xl font-bold tracking-tight">TokenFit</h1>
+        <span class="ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-white/20 backdrop-blur">WIP</span>
       </div>
+      <p class="text-lg sm:text-xl text-indigo-100 max-w-2xl">
+        Will that AI model run on your computer? Find out in 10 seconds — no terminal required.
+      </p>
+      <p class="text-sm text-indigo-200 mt-3 max-w-2xl">
+        Pick your laptop or build, and see every popular Ollama and MLX model with a clear speed estimate
+        and a plain-English explanation.
+      </p>
     </div>
   </header>
 
-  <main class="max-w-5xl mx-auto px-4 py-8 space-y-8">
+  <main class="max-w-5xl mx-auto px-4 py-8 space-y-6">
 
     <!-- Hardware picker -->
-    <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-      <h2 class="text-lg font-semibold mb-1">1. Tell us about your computer</h2>
-      <p class="text-sm text-slate-600 mb-4">Pick a preset, or build your own from parts.</p>
+    <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+      <div class="flex items-baseline gap-2 mb-1">
+        <span class="text-indigo-600 font-bold text-sm">STEP 1</span>
+        <h2 class="text-lg font-semibold">Tell us about your computer</h2>
+      </div>
+      <p class="text-sm text-slate-600 mb-5">Pick a preset, or build your own from parts.</p>
 
       <!-- Tabs -->
       <div class="flex gap-1 border-b border-slate-200 mb-6">
@@ -47,6 +57,7 @@
             <select id="preset-variant" class="select"></select>
           </label>
         </div>
+        <div id="preset-summary" class="mt-4 text-xs text-slate-500"></div>
       </div>
 
       <!-- Custom tab -->
@@ -55,7 +66,7 @@
           <label class="block">
             <span class="block text-sm font-medium mb-1">
               CPU
-              <span class="info-tip" data-tip="The processor handles inference when there's no GPU. Apple Silicon CPUs are unusually good at it because of unified memory.">?</span>
+              <span class="info-tip" data-tip="The processor handles inference when there's no GPU. Apple Silicon CPUs are unusually good at this thanks to unified memory.">?</span>
             </span>
             <select id="custom-cpu" class="select"></select>
           </label>
@@ -79,12 +90,11 @@
           </label>
         </div>
 
-        <!-- Advanced (storage) -->
         <details class="mt-4">
           <summary class="cursor-pointer text-sm text-slate-600 hover:text-slate-900">
             Advanced — Storage (only affects load time, not speed)
           </summary>
-          <div class="mt-3 grid sm:grid-cols-1 gap-4">
+          <div class="mt-3">
             <label class="block">
               <span class="block text-sm font-medium mb-1">Storage type</span>
               <select id="custom-storage" class="select"></select>
@@ -94,41 +104,44 @@
       </div>
     </section>
 
+    <!-- Summary chips -->
+    <section id="summary" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></section>
+
     <!-- Results -->
-    <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-      <div class="flex items-baseline justify-between mb-4">
+    <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+      <div class="flex items-start justify-between gap-4 mb-4 flex-wrap">
         <div>
-          <h2 class="text-lg font-semibold">2. Models you can run</h2>
-          <p class="text-sm text-slate-600">Sorted by what'll feel best on your hardware.</p>
+          <div class="flex items-baseline gap-2 mb-1">
+            <span class="text-indigo-600 font-bold text-sm">STEP 2</span>
+            <h2 class="text-lg font-semibold">Models you can run</h2>
+          </div>
+          <p class="text-sm text-slate-600">Click any row to see why and how to run it.</p>
         </div>
-        <div class="text-xs text-slate-500 hidden sm:flex gap-3">
-          <span><span class="badge badge-fast">●</span> Fast</span>
-          <span><span class="badge badge-ok">●</span> Usable</span>
-          <span><span class="badge badge-slow">●</span> Slow</span>
-          <span><span class="badge badge-no">●</span> Won't fit</span>
-        </div>
+        <button id="submit-bench-btn" class="text-xs px-3 py-2 rounded-lg border border-slate-300 hover:bg-slate-50 hover:border-slate-400 transition flex items-center gap-1.5">
+          <span>📊</span> Submit your benchmark
+        </button>
       </div>
 
-      <div class="overflow-x-auto">
+      <div class="overflow-x-auto -mx-2">
         <table class="w-full text-sm">
           <thead>
             <tr class="text-left text-slate-500 border-b border-slate-200">
-              <th class="py-2 pr-4 font-medium">Model</th>
-              <th class="py-2 pr-4 font-medium">
+              <th class="py-2 pl-2 pr-4 font-medium">Model</th>
+              <th class="py-2 pr-4 font-medium hidden sm:table-cell">
                 Format
-                <span class="info-tip" data-tip="GGUF = Ollama-compatible, runs everywhere. MLX = Apple Silicon-only, faster on Macs.">?</span>
+                <span class="info-tip" data-tip="GGUF = Ollama-compatible, runs everywhere. MLX = Apple Silicon-only, ~25% faster on Macs.">?</span>
               </th>
-              <th class="py-2 pr-4 font-medium">
+              <th class="py-2 pr-4 font-medium hidden md:table-cell">
                 Quant
                 <span class="info-tip" data-tip="Quantization shrinks the model. Q4 is the most popular trade-off: ~4× smaller, barely worse quality. Q8 is bigger but cleaner.">?</span>
               </th>
-              <th class="py-2 pr-4 font-medium">Size</th>
+              <th class="py-2 pr-4 font-medium hidden md:table-cell">Size</th>
               <th class="py-2 pr-4 font-medium">
                 Speed
                 <span class="info-tip" data-tip="Tokens per second. ~5 t/s ≈ slow reading, ~20 t/s ≈ conversational, ~50+ t/s ≈ instant.">?</span>
               </th>
               <th class="py-2 pr-4 font-medium">Status</th>
-              <th class="py-2 font-medium"></th>
+              <th class="py-2 pr-2 font-medium"></th>
             </tr>
           </thead>
           <tbody id="results-body"></tbody>
@@ -137,18 +150,17 @@
     </section>
 
     <!-- Disclaimer -->
-    <section class="text-xs text-slate-500 max-w-3xl">
+    <section class="text-xs text-slate-500 max-w-3xl pt-2">
       <p>
         <strong>How accurate is this?</strong> Numbers labeled
         <span class="badge badge-measured">measured</span> come from real benchmarks submitted by the community.
         Numbers labeled <span class="badge badge-estimated">estimated</span> are calculated from your hardware's memory
-        bandwidth and the model size — they're roughly within ±30% of real-world performance.
-        Got better data? <a class="underline hover:text-slate-700" href="#">Submit a benchmark.</a>
+        bandwidth and the model size — they're roughly within ±20% of real-world performance after calibration.
       </p>
     </section>
   </main>
 
-  <footer class="max-w-5xl mx-auto px-4 py-8 text-xs text-slate-500">
+  <footer class="max-w-5xl mx-auto px-4 py-8 text-xs text-slate-500 border-t border-slate-200 mt-8">
     <p>TokenFit · WIP · Made for newcomers to local AI.</p>
   </footer>
 

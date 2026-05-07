@@ -35,7 +35,12 @@
     { "id": "rtx-4090",        "name": "NVIDIA RTX 4090",    "vram_gb": 24,   "memory_bandwidth_gbps": 1008, "vendor": "nvidia" },
     { "id": "rtx-5080",        "name": "NVIDIA RTX 5080",    "vram_gb": 16,   "memory_bandwidth_gbps": 960,  "vendor": "nvidia" },
     { "id": "rtx-5090",        "name": "NVIDIA RTX 5090",    "vram_gb": 32,   "memory_bandwidth_gbps": 1792, "vendor": "nvidia" },
-    { "id": "rx-7900-xtx",     "name": "AMD RX 7900 XTX",    "vram_gb": 24,   "memory_bandwidth_gbps": 960,  "vendor": "amd" }
+    { "id": "rx-7900-xtx",     "name": "AMD RX 7900 XTX",    "vram_gb": 24,   "memory_bandwidth_gbps": 960,  "vendor": "amd" },
+    { "id": "rtx-4050-mobile", "name": "NVIDIA RTX 4050 (laptop)", "vram_gb": 6, "memory_bandwidth_gbps": 192,  "vendor": "nvidia" },
+    { "id": "rtx-4060-mobile", "name": "NVIDIA RTX 4060 (laptop)", "vram_gb": 8, "memory_bandwidth_gbps": 256,  "vendor": "nvidia" },
+    { "id": "rtx-4070-mobile", "name": "NVIDIA RTX 4070 (laptop)", "vram_gb": 8, "memory_bandwidth_gbps": 256,  "vendor": "nvidia" },
+    { "id": "rtx-4080-mobile", "name": "NVIDIA RTX 4080 (laptop)", "vram_gb": 12,"memory_bandwidth_gbps": 432,  "vendor": "nvidia" },
+    { "id": "rtx-4090-mobile", "name": "NVIDIA RTX 4090 (laptop)", "vram_gb": 16,"memory_bandwidth_gbps": 576,  "vendor": "nvidia" }
   ],
   "ram_types": [
     { "id": "ddr4-3200",   "name": "DDR4-3200",   "bandwidth_per_channel_gbps": 25.6 },

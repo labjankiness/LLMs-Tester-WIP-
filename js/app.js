@@ -51,10 +51,16 @@ function buildHardware() {
 }
 
 function populateSelects() {
-  // Presets
+  // Presets — grouped by category for easier scanning.
   const presetSel = document.getElementById('preset-machine');
-  presetSel.innerHTML = state.laptops.presets
-    .map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+  const byCategory = state.laptops.presets.reduce((acc, p) => {
+    (acc[p.category || 'Other'] ||= []).push(p);
+    return acc;
+  }, {});
+  presetSel.innerHTML = Object.entries(byCategory)
+    .map(([cat, items]) =>
+      `<optgroup label="${cat}">${items.map(p => `<option value="${p.id}">${p.name}</option>`).join('')}</optgroup>`
+    ).join('');
   populateVariants();
   presetSel.addEventListener('change', () => { populateVariants(); render(); });
   document.getElementById('preset-variant').addEventListener('change', render);
@@ -167,39 +173,93 @@ function explainRow(hw, row) {
   `;
 }
 
+function renderSummary(rows) {
+  const counts = { fast: 0, ok: 0, slow: 0, wont_fit: 0 };
+  for (const r of rows) counts[r.status]++;
+  document.getElementById('summary').innerHTML = `
+    <div class="summary-chip fast"><div><div class="count">${counts.fast}</div><div class="label">Fast</div></div></div>
+    <div class="summary-chip ok"><div><div class="count">${counts.ok}</div><div class="label">Usable</div></div></div>
+    <div class="summary-chip slow"><div><div class="count">${counts.slow}</div><div class="label">Slow</div></div></div>
+    <div class="summary-chip no"><div><div class="count">${counts.wont_fit}</div><div class="label">Won't fit</div></div></div>
+  `;
+}
+
+function renderPresetSummary(hw) {
+  const el = document.getElementById('preset-summary');
+  if (!el || !hw) return;
+  const totalMem = (hw.gpu ? hw.gpu.vram_gb : 0) + hw.ram_gb;
+  const parts = [
+    hw.cpu.name,
+    hw.gpu ? `${hw.gpu.name} (${hw.gpu.vram_gb} GB VRAM)` : 'no discrete GPU',
+    `${hw.ram_gb} GB RAM`,
+    `total memory budget: ${totalMem} GB`,
+  ];
+  el.textContent = parts.join(' · ');
+}
+
+function buildSubmitUrl(hw) {
+  // Pre-fills a GitHub issue. Repo path is read from a meta tag if present, else placeholder.
+  const repo = (document.querySelector('meta[name="github-repo"]')?.content) || 'OWNER/REPO';
+  const title = `[benchmark] ${hw.cpu.name}${hw.gpu ? ' + ' + hw.gpu.name : ''} (${hw.ram_gb} GB)`;
+  const body = [
+    '<!-- Thanks for submitting a benchmark! Fill in the t/s you actually measured. -->',
+    '',
+    '**Hardware**',
+    `- CPU: ${hw.cpu.name} (\`${hw.cpu.id}\`)`,
+    `- GPU: ${hw.gpu ? `${hw.gpu.name} (\`${hw.gpu.id}\`)` : 'none'}`,
+    `- RAM: ${hw.ram_gb} GB ${hw.ramType ? hw.ramType.name : ''}`,
+    '',
+    '**Model**',
+    '- Model ID: `<e.g. llama3.1-8b>`',
+    '- Quant: `<e.g. Q4_K_M or 4-bit>`',
+    '- Format: `<gguf | mlx>`',
+    '',
+    '**Result**',
+    '- Tokens / second: `<your number>`',
+    '- How you measured: `<e.g. ollama run ... --verbose, mlx_lm.generate, ...>`',
+    '- Source link (optional): `<reddit/youtube/etc>`',
+  ].join('\n');
+  return `https://github.com/${repo}/issues/new?labels=benchmark&title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}`;
+}
+
 function render() {
   const hw = buildHardware();
   if (!hw) return;
+  renderPresetSummary(hw);
   const rows = evaluateAll(hw, state.models, state.benchmarks);
-  const body = document.getElementById('results-body');
+  renderSummary(rows);
 
+  const body = document.getElementById('results-body');
   body.innerHTML = rows.map((row, i) => {
     const formatCls = row.quant.format === 'mlx' ? 'mlx' : 'gguf';
-    const main = `
+    return `
       <tr class="row-main" data-row="${i}">
         <td class="font-medium">${row.model.name}</td>
-        <td><span class="format-pill ${formatCls}">${row.quant.format.toUpperCase()}</span></td>
-        <td class="font-mono text-xs">${row.quant.label}</td>
-        <td class="font-mono text-xs">${row.quant.size_gb} GB</td>
+        <td class="hidden sm:table-cell"><span class="format-pill ${formatCls}">${row.quant.format.toUpperCase()}</span></td>
+        <td class="font-mono text-xs hidden md:table-cell">${row.quant.label}</td>
+        <td class="font-mono text-xs hidden md:table-cell">${row.quant.size_gb} GB</td>
         <td>${speedCell(row)}</td>
         <td>${statusBadge(row.status)}</td>
-        <td class="text-slate-400 text-xs">▾</td>
+        <td class="text-slate-400 text-xs"><span class="chevron">▾</span></td>
       </tr>
       <tr class="expand-row hidden" data-expand="${i}">
         <td colspan="7">${explainRow(hw, row)}</td>
       </tr>
     `;
-    return main;
   }).join('');
 
-  // Expand/collapse interaction.
   body.querySelectorAll('tr.row-main').forEach(tr => {
     tr.addEventListener('click', () => {
       const idx = tr.dataset.row;
       const exp = body.querySelector(`tr[data-expand="${idx}"]`);
       exp.classList.toggle('hidden');
+      tr.classList.toggle('expanded');
     });
   });
+
+  // Wire submit button (rebound each render so URL reflects current hardware).
+  const btn = document.getElementById('submit-bench-btn');
+  btn.onclick = () => window.open(buildSubmitUrl(hw), '_blank', 'noopener');
 }
 
 function setupTooltips() {

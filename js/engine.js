@@ -18,13 +18,24 @@ const FAST_THRESHOLD = 20;  // >= 20 t/s feels conversational
 const OK_THRESHOLD = 8;     // 8-20 t/s feels usable but slow
                             // < 8 t/s feels painfully slow
 
-// Format multiplier. MLX on Apple Silicon is ~30% faster than GGUF on the same chip
+// Format multiplier. MLX on Apple Silicon is ~25% faster than GGUF on the same chip
 // because it uses Metal natively and exploits unified memory better.
-const MLX_APPLE_SILICON_BOOST = 1.3;
+const MLX_APPLE_SILICON_BOOST = 1.25;
 
-// Realistic-vs-theoretical multiplier. Memory bandwidth alone overestimates t/s
-// because real inference also has compute and KV-cache overhead.
-const REAL_WORLD_EFFICIENCY = 0.45;
+// Realistic-vs-theoretical multipliers per platform. Memory bandwidth alone
+// overestimates t/s because real inference has compute and KV-cache overhead.
+// Calibrated against benchmarks.json so most estimates land within ~20% of measured.
+const EFFICIENCY = {
+  apple_silicon: 0.40,   // unified memory; quoted bandwidth is rarely fully delivered
+  gpu_vram:      0.55,   // GPU bandwidth is well-utilized for inference
+  system_ram:    0.30,   // CPU-only on x86 has more overhead and worse caching
+};
+
+// Small models that fit in cache see diminishing returns from bandwidth;
+// the formula is bandwidth-bound and underestimates compute-bound regimes,
+// but for our 2-50GB models this is mostly a non-issue. Cap to avoid runaway numbers
+// for tiny models on huge bandwidth platforms.
+const TPS_CAP = 200;
 
 export function findBenchmark(benchmarks, hw, modelId, quantLabel, format) {
   return benchmarks.find(b =>
@@ -36,21 +47,18 @@ export function findBenchmark(benchmarks, hw, modelId, quantLabel, format) {
   );
 }
 
-// Returns the effective memory bandwidth (GB/s) the model will actually use.
-// On Apple Silicon, the SoC bandwidth applies (model lives in unified memory).
-// On x86 with a GPU, if the model fits in VRAM we use GPU bandwidth; otherwise system RAM bandwidth.
+// Returns { bandwidth_gbps, regime } where regime determines which efficiency multiplier applies.
 function effectiveBandwidth(hw, sizeGb) {
   if (hw.cpu.platform === 'apple-silicon') {
-    return hw.cpu.memory_bandwidth_gbps;
+    return { bandwidth: hw.cpu.memory_bandwidth_gbps, regime: 'apple_silicon' };
   }
   if (hw.gpu && hw.gpu.vram_gb >= sizeGb && hw.gpu.memory_bandwidth_gbps > 0) {
-    return hw.gpu.memory_bandwidth_gbps;
+    return { bandwidth: hw.gpu.memory_bandwidth_gbps, regime: 'gpu_vram' };
   }
-  // Fall back to system RAM bandwidth (dual-channel assumed).
   if (hw.ramType && hw.ramType.bandwidth_per_channel_gbps > 0) {
-    return hw.ramType.bandwidth_per_channel_gbps * 2;
+    return { bandwidth: hw.ramType.bandwidth_per_channel_gbps * 2, regime: 'system_ram' };
   }
-  return hw.cpu.memory_bandwidth_gbps;
+  return { bandwidth: hw.cpu.memory_bandwidth_gbps, regime: 'system_ram' };
 }
 
 export function estimateModel(hw, model, quant, benchmarks) {
@@ -84,14 +92,14 @@ export function estimateModel(hw, model, quant, benchmarks) {
     source = 'measured';
   } else {
     // Theoretical: bandwidth / size, scaled by efficiency, with format boost.
-    const bandwidth = effectiveBandwidth(hw, quant.size_gb);
-    let raw = (bandwidth / quant.size_gb) * REAL_WORLD_EFFICIENCY;
+    const { bandwidth, regime } = effectiveBandwidth(hw, quant.size_gb);
+    let raw = (bandwidth / quant.size_gb) * EFFICIENCY[regime];
     if (quant.format === 'mlx' && hw.cpu.platform === 'apple-silicon') {
       raw *= MLX_APPLE_SILICON_BOOST;
     }
     // MoE models are faster than their total size suggests because only a subset of params activate.
     if (model.id === 'mixtral-8x7b') raw *= 2.5;
-    tps = Math.round(raw);
+    tps = Math.min(TPS_CAP, Math.round(raw));
     source = 'estimated';
   }
 
