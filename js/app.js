@@ -8,7 +8,46 @@ const state = {
   models: null,
   benchmarks: null,
   mode: 'preset', // or 'custom'
+  tomSelects: {}, // id -> Tom Select instance, for re-syncing after options change
 };
+
+// Wraps every <select> in the form with Tom Select for live search.
+// We call .sync() whenever we change <select>.innerHTML so the wrapper
+// picks up the new options.
+function enhanceSelects() {
+  const ids = [
+    'preset-machine', 'preset-variant',
+    'custom-cpu-vendor', 'custom-cpu',
+    'custom-gpu-vendor', 'custom-gpu',
+    'custom-ram-gen', 'custom-ram-speed', 'custom-ram-sticks',
+    'custom-storage',
+  ];
+  for (const id of ids) {
+    const el = document.getElementById(id);
+    if (!el) continue;
+    state.tomSelects[id] = new TomSelect(el, {
+      maxOptions: 200,
+      // Show search box only when the list has enough items to warrant it.
+      controlInput: el.options.length > 5 || el.querySelector('optgroup') ? '<input>' : null,
+      plugins: [],
+      render: {
+        no_results: (data) => `<div class="no-results">No matches for "${data.input}"</div>`,
+      },
+    });
+  }
+}
+
+// Replaces the underlying <select>'s options and reflects them in the wrapper.
+function setSelectOptions(id, html, value) {
+  const el = document.getElementById(id);
+  el.innerHTML = html;
+  if (value !== undefined) el.value = value;
+  const ts = state.tomSelects[id];
+  if (ts) {
+    ts.sync();
+    if (value !== undefined) ts.setValue(value, true);
+  }
+}
 
 async function loadData() {
   const [components, laptops, models, benchmarks] = await Promise.all([
@@ -73,11 +112,10 @@ function populateCpus(vendor) {
     if (vendor === 'apple') return c.platform === 'apple-silicon';
     return c.vendor === vendor;
   });
-  const sel = document.getElementById('custom-cpu');
-  sel.innerHTML = list.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
-  // Sensible default per vendor.
+  const html = list.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
   const defaults = { apple: 'apple-m3-pro', intel: 'intel-i9-14900k', amd: 'amd-7700x' };
-  if (defaults[vendor] && list.find(c => c.id === defaults[vendor])) sel.value = defaults[vendor];
+  const def = list.find(c => c.id === defaults[vendor]) ? defaults[vendor] : (list[0] && list[0].id);
+  setSelectOptions('custom-cpu', html, def);
 }
 
 function populateGpus(vendor) {
@@ -88,10 +126,10 @@ function populateGpus(vendor) {
   }
   wrap.classList.remove('hidden');
   const list = state.components.gpus.filter(g => g.vendor === vendor);
-  const sel = document.getElementById('custom-gpu');
-  sel.innerHTML = list.map(g => `<option value="${g.id}">${g.name}</option>`).join('');
+  const html = list.map(g => `<option value="${g.id}">${g.name}</option>`).join('');
   const defaults = { nvidia: 'rtx-4070', amd: 'rx-7900-xtx' };
-  if (defaults[vendor] && list.find(g => g.id === defaults[vendor])) sel.value = defaults[vendor];
+  const def = list.find(g => g.id === defaults[vendor]) ? defaults[vendor] : (list[0] && list[0].id);
+  setSelectOptions('custom-gpu', html, def);
 }
 
 // When the user picks Apple Silicon, GPU and RAM dropdowns are irrelevant
@@ -104,9 +142,10 @@ function applyApplePlatformConstraints() {
   const noteId = 'apple-silicon-note';
   let note = document.getElementById(noteId);
 
+  const gpuVendorTs = state.tomSelects['custom-gpu-vendor'];
   if (isApple) {
-    gpuVendor.value = 'none';
-    gpuVendor.disabled = true;
+    if (gpuVendorTs) gpuVendorTs.setValue('none', true); else gpuVendor.value = 'none';
+    if (gpuVendorTs) gpuVendorTs.disable(); else gpuVendor.disabled = true;
     gpuWrap.classList.add('hidden');
     if (!note) {
       note = document.createElement('div');
@@ -116,7 +155,7 @@ function applyApplePlatformConstraints() {
       gpuVendor.closest('.grid').appendChild(note);
     }
   } else {
-    gpuVendor.disabled = false;
+    if (gpuVendorTs) gpuVendorTs.enable(); else gpuVendor.disabled = false;
     if (note) note.remove();
   }
 }
@@ -137,7 +176,8 @@ function populateRamSpeeds(gen) {
   const prev = parseInt(sel.value, 10);
   const def = options.includes(RAM_DEFAULT_SPEED[gen]) ? RAM_DEFAULT_SPEED[gen] : options[0];
   const selected = options.includes(prev) ? prev : def;
-  sel.innerHTML = options.map(s => `<option value="${s}" ${s === selected ? 'selected' : ''}>${s} MT/s</option>`).join('');
+  const html = options.map(s => `<option value="${s}">${s} MT/s</option>`).join('');
+  setSelectOptions('custom-ram-speed', html, String(selected));
 }
 
 function populateSelects() {
@@ -194,9 +234,9 @@ function populateSelects() {
 function populateVariants() {
   const presetId = document.getElementById('preset-machine').value;
   const preset = state.laptops.presets.find(p => p.id === presetId);
-  const sel = document.getElementById('preset-variant');
-  sel.innerHTML = preset.variants
+  const html = preset.variants
     .map((v, i) => `<option value="${i}">${v.label}</option>`).join('');
+  setSelectOptions('preset-variant', html, '0');
 }
 
 function setupTabs() {
@@ -386,6 +426,7 @@ async function main() {
     return;
   }
   populateSelects();
+  enhanceSelects();
   setupTabs();
   setupTooltips();
   render();

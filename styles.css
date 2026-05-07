@@ -135,3 +135,46 @@ tbody tr.row-main.expanded .chevron {
 .summary-chip.ok   .count { color: #d97706; }
 .summary-chip.slow .count { color: #ea580c; }
 .summary-chip.no   .count { color: #dc2626; }
+
+/* Tom Select overrides: match the rest of the form's look */
+.ts-wrapper .ts-control {
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  min-height: auto;
+  box-shadow: none;
+}
+.ts-wrapper.focus .ts-control,
+.ts-wrapper.dropdown-active .ts-control {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+.ts-wrapper.disabled .ts-control {
+  background: #f1f5f9;
+  color: #94a3b8;
+}
+.ts-dropdown {
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  margin-top: 4px;
+  font-size: 0.875rem;
+}
+.ts-dropdown .active {
+  background: #eef2ff;
+  color: #1e1b4b;
+}
+.ts-dropdown .optgroup-header {
+  background: #f8fafc;
+  color: #475569;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 6px 12px;
+}
+.ts-dropdown .no-results {
+  padding: 8px 12px;
+  color: #94a3b8;
+  font-style: italic;
+}
